@@ -10,8 +10,8 @@
 
 - 网络通信协议（网络知识相对薄弱，后期补充）
 - Java基础
-  - [基础](https://github.com/geeeeeeeeek/git-recipes/wiki/2.1-快速指南)
-  - 集合
+  - [基础](./docs/basis/Java基础.md)
+  - [集合](./docs/basis/Java集合.md)
   - 反射
 - JUC多线程及高并发
 - JVM虚拟机
@@ -23,4 +23,6 @@
 - Git前世今生
 - GitHub小拓展
 - 框架相关
+  - [Mybatis入门使用](./docs/frame/Mybatis基础.md)
+  - [Mybatis相关面试题以及难点](./docs/frame/Mybatis面试.md)
 - 第三方API使用
