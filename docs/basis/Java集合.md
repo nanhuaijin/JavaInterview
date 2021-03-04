@@ -21,21 +21,23 @@
 
   ​	1.如图所示HashMap，存在两个key，1和3，假设再增加一个元素会触发扩容
 
-![Image](../../pictures/basis/头插法1.png)
+<img src="../../pictures/basis/头插法1.png" alt="Image" style="zoom:50%;" />
 
 ​		2.此时线程1和线程2都执行put()操作，都触发扩容，并且线程1执行transfer()中的**Entry<K,V> next = e.next**后被挂起，此时e指向1，next指向3
 
-![Image](../../pictures/basis/头插法2.png)
+<img src="../../pictures/basis/头插法2.png" alt="Image" style="zoom:50%;" />
 
 ​		3.线程2开始执行，并且在新的数组中1和3还会发生哈希冲突，由于使用的是头插法那么线程2完成扩容后最终数组如图
 
-![Image](../../pictures/basis/头插法3.png)
+<img src="../../pictures/basis/头插法3.png" alt="Image" style="zoom:50%;" />
 
 ​		4.回到线程1，e指向1，next指向3，当执行到**e.next = newTable[i]**，便会出现循环链表
 
-![Image](../../pictures/basis/头插法4.png)
+<img src="../../pictures/basis/头插法4.png" alt="Image" style="zoom:50%;" />
 
 ​		5.之后我们通过get(1)和get(3)不会出现问题，但是get(5)，就会一直在链表中向下寻找，由于链表闭环，导致死循环。
+
+> 具体详情参考：[HashMap头插法为什么会出现死循环](https://blog.csdn.net/littlehaes/article/details/105241194)
 
 ```java
 	//jdk1.7 HashMap
@@ -110,7 +112,7 @@ public synchronized V put(K key, V value) {
 
 - 是否保证线程安全：二者都是线程不安全的
 - 底层结构：
-  - ArrayList底层是Object数组，初始创建的时候是**空数组**，只有在第一次添加数据的时候才会扩容至10，以后1.5被扩容，即15，22
+  - ArrayList底层是Object数组，初始创建的时候是**空数组**，只有在第一次添加数据的时候才会扩容至10，以后1.5被扩容，即15，22。底层是先**Arrays.copyOf()**原数组，再进行add操作
   - LinkedList底层是双向链表
 - 时间复杂度：
   - ArrayList在执行add()方法的时候其实是数组复制的过程，默认是向末尾添加一个元素，时间复杂度是O(1)，但是指定位置的时候，复杂度就是O(n-1)
@@ -123,4 +125,3 @@ public synchronized V put(K key, V value) {
 ### 3.2ArrayList和Vector区别
 
 - Vector类的所有方法都是同步的，是线程安全的，但是如果只有一个线程，会耗费大量的时间。
-
