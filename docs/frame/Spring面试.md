@@ -547,23 +547,19 @@ public class CalculatorLogProxy implements InvocationHandler {
 
 ![Image](../../pictures/frame/事务传播行为.png)
 
-- PROPAGATION_REQUIRED：支持当前事务，如果不存在，就新建一个
-  - 删除用户 删除订单 处于同一个事务，如果删除用户失败，删除订单也要回滚
-- PROPAGATION_SUPPORTS：支持当前事务，如果不存在，就不使用事务
-- PROPAGATION_MANDATORY：支持当前事务，如果不存在，抛出异常
-- PROPAGATION_REQUIRES_NEW：如果有事务存在，挂起当前事务，创建一个新的事务
-  - 用户下单，发送通知短信。通知短信回创建一个新的事务，如果短信发送失败，不影响订单的生成。
-- PROPAGATION_NOT_SUPPORTED：以非事务方式运行，如果有事务存在，挂起当前事务
-- PROPAGATION_NEVER：以非事务方式运行，如果有事务存在，抛出异常
-- PROPAGATION_NESTED：如果当前事务存在，则嵌套事务执行
-  - 依赖于JDBC3.0提供的SavePoint技术
-  - 删除用户 删除订单。在删除订单后，设置savePoint，执行删除用户。删除订单和删除用户在同一事务中，删除用户失败，事务回滚savePoint，由用户控制视图提交还是回滚
+- **propagation_requierd**：如果当前没有事务，就新建一个事务，如果已存在一个事务中，加入到这个事务中，这是最常见的选择。
+- **propagation_supports**：支持当前事务，如果没有当前事务，就以非事务方法执行。
+- **propagation_mandatory**：使用当前事务，如果没有当前事务，就抛出异常。
+- **propagation_required_new**：新建事务，如果当前存在事务，把当前事务挂起。
+- **propagation_not_supported**：以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。
+- **propagation_never**：以非事务方式执行操作，如果当前事务存在则抛出异常。
+- **propagation_nested**：如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则执行与propagation_required类似的操作
 
 #### 4.5.4最常用的传播机制就三种
 
-1. <font color='red'><b>PROPAGATION_REQUIRED</b></font>：一个事务，要么成功，要么失败
-2. <font color='red'><b>PROPAGATION_REQUIRES_NEW</b></font>：两个不同事务，彼此之间没有关系。一个事务失败了不影响另一个事务
-3. <font color='red'><b>PROPAGATION_NESTED</b></font>：一个事务，在A事务调用B过程中，B失败了，回滚事务到之前SavePoint，用户可以选择提交或者回滚
+1. <font color='red'><b>PROPAGATION_REQUIRED</b></font>
+2. <font color='red'><b>PROPAGATION_REQUIRES_NEW</b></font>
+3. <font color='red'><b>PROPAGATION_NESTED</b></font>
 
 ## 5.Spring监听器
 
