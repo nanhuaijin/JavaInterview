@@ -108,9 +108,41 @@ public synchronized V put(K key, V value) {
     }
 ```
 
-## 3.ArrayList、LinkedList和Vector的区别
+## 3.HashMap源码注释翻译
 
-### 3.1ArrayList和LinkedList区别
+> Java的开发者对HashMap有详细的说明解释，而这段解释就在HashMap类的注释上，这里简单做一些翻译，希望可以帮到你。
+
+![Image](../../pictures/basis/HashMap注释1.png)
+
+HashTable实现了Map接口类， HashMap这些接口实现了所有可选的map功能， 包括允许空值和空key。(HashMap和HashTable基本一致， 区别是HashMap是线程不同步的且允许空key。 HashMap不保证map的顺序， 而且顺序是可变的。)
+
+![Image](../../pictures/basis/HashMap注释2.png)
+
+如果将数据适当的分散到桶里， HashMap的添加、查询函数的执行周期是常量值,使用迭代器遍历所有数据的性能跟HashMap的桶（bucket）数量有直接关系， 为了提高遍历的性能， 不能设置比较大的桶数量或者负载因子过低。
+
+![Image](../../pictures/basis/HashMap注释3.png)
+
+HashMap实例有2个重要参数影响它的性能： 初始容量和负载因子。初始容量是指在哈希表里的桶总数， 一般在创建HashMap实例时设置初始容量。 负载因子是指哈希表在多满时扩容的百分比比例。当哈希表的数据个数超过负载因子和当前容量的乘积时， 哈希表要再做一次哈希（重建内部数据结构）， 哈希表每次扩容为原来的2倍。
+
+![Image](../../pictures/basis/HashMap注释4.png)
+
+负载因子的默认值是0.75， 它平衡了时间和空间复杂度。 负载因子越大会降低空间使用率，但提高了查询性能（表现在哈希表的大多数操作是读取和查询）考虑哈希表的性能问题， 要设置合适的初始容量， 从而减少rehash的次数。 当哈希表中entry的总数少于负载因子和初始容量乘积时， 就不会发生rehash动作。
+
+<img src="../../pictures/basis/HashMap注释5.png" alt="Image" style="zoom:150%;" />
+
+**如果有很多值要存储到HashMap实例中， 在创建HashMap实例时要设置足够大的初始容量， 避免自动扩容时rehash。** 如果很多关键字的哈希值相同， 会降低哈希表的性能。 为了降低这个影响， 当关键字支持[java.lang.Comparable](http://www.grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/8u40-b25/java/lang/Comparable.java#Comparable)时， 可以对关键字做次排序以降低影响。
+
+<img src="../../pictures/basis/HashMap注释6.png" alt="Image" style="zoom:150%;" />
+
+哈希表是非线程安全的， 如果多线程同时访问哈希表， 且至少一个线程修改了哈希表的结构， 那么必须在访问hashmap前设置同步锁。（修改结构是指添加或者删除一个或多个entry， 修改键值不算是修改结构。） 一般在多线程操作哈希表时， 要使用同步对象封装map。
+
+<img src="../../pictures/basis/HashMap注释7.png" alt="Image" style="zoom:150%;" />
+
+如果不封装Hashmap， 可以使用Collections.synchronizedMap 方法调用HashMap实例。 在创建HashMap实例时避免其他线程操作该实例， 即保证了线程安全。
+
+## 4.ArrayList、LinkedList和Vector的区别
+
+### 4.1ArrayList和LinkedList区别
 
 - 是否保证线程安全：二者都是线程不安全的
 - 底层结构：
@@ -124,6 +156,6 @@ public synchronized V put(K key, V value) {
   - ArrayList的空间浪费主要是由于扩容机制导致，末尾会存留一部分剩余空间。
   - LinkedList的空间浪费主要是需要保存前后指针。
 
-### 3.2ArrayList和Vector区别
+### 4.2ArrayList和Vector区别
 
 - Vector类的所有方法都是同步的，是线程安全的，但是如果只有一个线程，会耗费大量的时间。
