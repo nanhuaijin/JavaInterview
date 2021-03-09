@@ -12,7 +12,7 @@
 - Java基础
   - [基础](https://github.com/nanhuaijin/JavaInterview/blob/master/docs/basis/Java基础.md)
   - [集合](https://github.com/nanhuaijin/JavaInterview/blob/master/docs/basis/Java集合.md)
-  - 反射
+  - [新特性](https://github.com/nanhuaijin/JavaInterview/blob/master/docs/basis/Java8新特性.md)
 - JUC多线程及高并发
 - JVM虚拟机
 - MySql数据库

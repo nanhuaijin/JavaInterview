@@ -1,76 +1,102 @@
-## 1.JDK1.8新特性
+## 1.如何理解Java面向对象
 
-### 1.1Lambda表达式
+面向对象是利于语音对现实事务进行抽象定义，主要有三大特征：
 
-- 定义：Lambda允许把函数作为一个方法的参数（函数作为参数传递到方法中）
+1. 封装：通常认为封装是把数据和操作数据的方法绑定起来，对数据的访问只能通过已定义的接口。
+2. 继承：继承是从已有类得到继承信息创建新类的过程
+3. 多态性：多态性是指允许不同子类型的对象对同一消息作出不同的响应。
 
-- 条件：只有函数式接口才可以使用Lambda表达式
+## 2.Java两大数据类型
 
-  - 函数式接口：只有一个抽象方法的接口，可以用**@FunctionalInterface**标注为函数式接口，在编译时期可以提前发现错误。
+> 参考链接：https://blog.csdn.net/chenliguan/article/details/53888018
 
-- 语法格式
+### 2.1分类
 
-  - ```java
-    //1.不需要声明参数类型，编译器可以自动识别
-    //2.如果是一个参数，圆括号可以省略不写，但是多个参数必须有圆括号
-    //3.如果代码语句expression部分只包含一句，可以省略花括号，多个语句必须有花括号
-    (params) -> {expression}
-    ```
+1. 基本数据类型
 
-- 使用示例（注意：在实际开发中一般不允许直接创建线程，这里只作为eg）
+   | 类型    | 存储空间 | 取值范围                         | 备注                                                     |
+   | ------- | -------- | -------------------------------- | -------------------------------------------------------- |
+   | byte    | 1字节    | -2^7 ~ 2^7-1，即-128 ~ 127       |                                                          |
+   | short   | 2字节    | -2^15 ~ 2^15-1，即-32768 ~ 32767 |                                                          |
+   | int     | 4字节    | -2^31 ~ 2^31-1，约21亿           |                                                          |
+   | long    | 8字节    | -2^63 ~ 2^63-1                   | 一般末尾需要加L                                          |
+   | double  | 8字节    | 1.797693e+308~ 4.9000000e-324    | e+38表示是乘以10的38次方，<br />e-45表示乘以10的负45次方 |
+   | float   | 4字节    | 3.402823e+38 ~ 1.401298e-45      | 一般末尾需要加F                                          |
+   | char    | 2字节    | 0-65535                          |                                                          |
+   | boolean | 1字节    | true \| false                    |                                                          |
 
-  - ```java
-    //只有一句代码语句
-    new Thread(() -> System.out.println("启动线程"), "线程名称").start();
-//多个代码语句
-    new Thread(() -> {
-      System.out.println("线程启动");
-      System.out.println("线程结束");
-    }, "线程名称").start();
-    ```
-    
+2. 引用数据类型：类、数组等。
 
-### 1.2函数式编程
+### 2.2封装类
 
-### 1.3Steam流
+为了编程的方便还是引入了基本数据类型，但是为了能够将这些基本数据类型当成对象操作，Java为每 一个基本数据类型都引入了对应的包装类型（wrapper class），从Java 5开始引入了自动装箱/拆箱机制，使得二者可以自动相互转换。
 
-- 定义：stream流是集合元素的函数模型，可以理解为操作集合的工具类
-- 方法
+eg：需求需要记录每个学生的成绩，如果使用基本数据类型，那么0这个分数到底表示该生考了0分还是没参加考试呢？为此需要再定义一个字段来表示参没参考，而如果使用包装类型，就可以直接用null表示。
 
-| 方法                        | 描述                                                         |
-| :-------------------------- | :----------------------------------------------------------- |
-| map(Function f)             | 接收函数作为参数，并映射成新的元素                           |
-| filter(Predicate p)         | 接收布尔类型的函数为参数，排除掉一些元素                     |
-| sorted()                    | 按照自然顺序排序                                             |
-| sorted(Comparator c)        | 按照比较器的顺序排序                                         |
-| allMatch(Predicate p)       | 检查是否匹配所有元素                                         |
-| anyMatch(Predicate p)       | 检查是否至少匹配一个元素                                     |
-| noneMatch(Predicate p)      | 检查是否没有匹配所有元素                                     |
-| collect(Collector c)        | 将流转换为其他形式。接收一个 Collector接口的实现，将Stream中元素汇总 |
-| partitioningBy(Predicate p) | 根据true和false进行分区                                      |
+> 基本数据类型: boolean，char，byte，short，int，long，float，double 
+> 封装类类型：Boolean，Character，Byte，Short，Integer，Long，Float，Double
+
+### 2.3int和Integer的区别
+
+- Integer是int的包装类；int是基本数据类型；
+- Integer变量必须实例化后才能使用；int变量不需要；
+- Integer实际是对象的引用，指向此new的Integer对象；int是直接存储数据值 ；
+- Integer的默认值是null；int的默认值是0。
+
+#### 2.3.1比较
+
+- 在-128~127之内：静态常量池中cache数组是static final类型，cache数组对象会被存储于静态常量池中。cache数组里面的元素却不是static final类型，而是cache[k] = new Integer(j++)，那么这些元素是存储于堆中，只是cache数组对象存储的是指向了堆中的Integer对象（引用地址）
+- 在-128~127 之外：新建一个 Integer对象，并返回。
 
 ```java
-//模拟创建一个User对象，包含字段name、age、sex，姓名、年龄、性别（男-true，女-false）
-//User集合userList
-//1.map(Function f)：结合collect(Collectors.toList())生成所有用户名称的新集合
-List<String> nameList = userList.stream().map(user->user.get("name"))
-  		.collect(Collectors.toList());
-//2.filter(Predicate p)：筛选出性别为true的用户
-List<User> manList = userList.stream().filter(User::isSex).collect(Collectors.toList());
-//3.sorted()：按照自然顺序排序
-//4.sorted(Comparator c)：默认情况是按照年龄升序排序，结合reversed()按照年龄降序排序
-//						如果存在多个条件，可以结合thenComparing按照姓名自然序升序
-List<User> newList = userList.stream().sorted(Comparator.comparing(User::getAge).reversed()
-                .thenComparing(User::getName)).collect(Collectors.toList());
-//5.partitioningBy(Predicate p)：根据性别分区
-Map<Boolean, List<User>> collect = userList.stream()
-  	.collect(Collectors.partitioningBy(User::isSex));
-List<User> manList = collect.get(true);
-List<User> womanList = collect.get(false);
-  
+public static Integer valueOf(int i) {
+        assert IntegerCache.high >= 127;
+        if (i >= IntegerCache.low && i <= IntegerCache.high) {
+          return IntegerCache.cache[i + (-IntegerCache.low)];
+        }
+        return new Integer(i);
+}
 ```
 
-## 2.StringBuilder和StringBuffer区别
+- 自动装箱/拆箱是Java5才有的特性。
+  - 自动装箱：将基本数据类型重新转化为对象
+  - 自动拆箱：将对象重新转化为基本数据类型
+
+```java
+Integer a = new Integer(100);
+Integer b = new Integer(100);
+int c = 100;
+Integer d = new Integer(150);
+int e = 150;
+Integer f = 100;
+Integer g = 100;
+Integer h = 128;
+Integer i = 128;
+
+System.out.println(a == b); //false
+System.out.println(a == c); //自动拆箱为int进行比较 true
+System.out.println(d == e); //自动拆箱为int进行比较  true
+System.out.println(f == g); //true 常量池
+System.out.println(h == i); //false 
+```
+
+### 2.4char型变量能不能存储一个汉字，为什么？
+
+char是按照字符存储的，不管英文还是中文，固定占用占用2个字节，用来储存Unicode字符，范围在0-65535。
+
+> unicode编码字符集中包含了汉字，所以，char型变量中当然可以存储汉字啦。不过，如果某个特殊的汉字没有被包含在unicode编码字符集中，那么，这个char型变量中就不能存储这个特殊汉字。
+
+## 3.String类
+
+### 3.1StringBuilder和StringBuffer区别
 
 - StringBuilder是线程不安全的，较StringBuffer有10-15%的性能提升。
 - StringBuffer底层都是采用的同步方法Synchronized修饰的。
+
+## 4.==和equals的区别
+
+1. ==对于基本类型比较值是否相等，比较引用类型是判断内存地址是否相同
+2. equals是属于Object类的方法，如果没有被重写，默认也是==。如果重写了Object的hashCode方法和equals方法，则按照重写的规则判断。
+
+> 注意：我们常用的String类也是重写过equals方法的，所以是比较值是否相等。
+
