@@ -17,7 +17,7 @@
 - JVM虚拟机
 - MySql数据库
 - NoSql数据库
-  - Redis
+  - [Redis](https://github.com/nanhuaijin/JavaInterview/blob/master/docs/nosql/redis/Redis.md)
 - MQ消息中间件
 - Linux基本命令
 - Git前世今生
