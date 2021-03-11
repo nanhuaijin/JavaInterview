@@ -13,7 +13,7 @@
   - [基础](https://github.com/nanhuaijin/JavaInterview/blob/master/docs/basis/Java基础.md)
   - [集合](https://github.com/nanhuaijin/JavaInterview/blob/master/docs/basis/Java集合.md)
   - [新特性](https://github.com/nanhuaijin/JavaInterview/blob/master/docs/basis/Java8新特性.md)
-- JUC多线程及高并发
+- [JUC多线程及高并发](https://github.com/nanhuaijin/JavaInterview/blob/master/docs/juc/JUC高并发.md)
 - JVM虚拟机
 - MySql数据库
 - NoSql数据库
