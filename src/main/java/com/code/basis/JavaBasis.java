@@ -7,6 +7,15 @@ package com.code.basis;
  */
 public class JavaBasis {
     public static void main(String[] args) {
+
+        compareIntAndInteger();
+
+    }
+
+    /**
+     * int和Integer区别
+     */
+    public static void compareIntAndInteger() {
         Integer a = new Integer(100);
         Integer b = new Integer(100);
         int c = 100;
