@@ -1,6 +1,6 @@
-## 1.JDBC回顾
+# 1.JDBC回顾
 
-### 1.1代码演示
+## 1.1代码演示
 
 ```java
 public class JdbcTest {
@@ -51,21 +51,21 @@ public class JdbcTest {
 }
 ```
 
-### 1.2JDBC所带来的问题
+## 1.2JDBC所带来的问题
 
 ![Image](../../pictures/frame/JDBC问题.png)
 
-## 2.Mybatis介绍
+# 2.Mybatis介绍
 
 ## 2.1[官网](https://mybatis.org/mybatis-3/zh/index.html)
 
-### 2.2简介
+## 2.2简介
 
 1. 原是apache的一个开源项目iBatis，2010年6月这个项目由apache software foundation 迁移到了google code，随着开发团队转投Google Code旗下，ibatis3.x正式更名为Mybatis ，代码于2013年11月迁移到Github。
 2. 相对Hibernate和ApacheOJB等“一站式”ORM（Object Relational Mapping）解决方案而言，ibatis 是一种“半自动化”的ORM实现。
 3. 无论 Hibernate还是Apache OJB，都对数据库结构提供了较为完整的封装，提供了从POJO到数据库表的全套映射机制。程序员往往只需定义好了POJO 到数据库表的映射关系，即可通过 Hibernate或者OJB 提供的方法完成持久层操作。程序员甚至不需要对 SQL 的熟练掌握，Hibernate/OJB 会根据制定的存储逻辑，自动生成对应的 SQL 并调用 JDBC 接口加以执行。
 
-### 2.3特点
+## 2.3特点
 
 1） 支持自定义SQL、存储过程、及高级映射
 
@@ -81,7 +81,7 @@ public class JdbcTest {
 >
 >  因此，对性能要求较高的电商类项目，一般会使用MyBatis，而对与业务逻辑复杂，不太在乎执行效率的传统行业，一般会使用Hibernate
 
-### 2.4Mybatis整体架构
+## 2.4Mybatis整体架构
 
 ![Image](../../pictures/frame/Mybatis整体架构.png)
 
@@ -101,11 +101,11 @@ public class JdbcTest {
   - 具体的sql，sql执行所需的参数类型，sql执行结果的封装类型
   - 参数类型和结果集封装类型包括3种：HashMap、基本数据类型、pojo
 
-## 3.快速入门
+# 3.快速入门
 
-### 3.1创建项目引入依赖等
+## 3.1创建项目引入依赖等
 
-### 3.2mybatis-config.xml配置文件
+## 3.2mybatis-config.xml配置文件
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -133,7 +133,7 @@ public class JdbcTest {
 </configuration>
 ```
 
-### 3.3UserMapper.xml映射文件，参考官方文档
+## 3.3UserMapper.xml映射文件，参考官方文档
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -160,7 +160,7 @@ public class JdbcTest {
 </mapper>
 ```
 
-### 3.4MybatisTest.java内容
+## 3.4MybatisTest.java内容
 
 ```java
 public static void main(String[] args) throws IOException {
@@ -187,7 +187,7 @@ public static void main(String[] args) throws IOException {
 	}
 ```
 
-### 3.5典型错误
+## 3.5典型错误
 
 - resultType="com.breeze.pojo.User"没有填写全路径
 
@@ -197,7 +197,7 @@ public static void main(String[] args) throws IOException {
 
 ![Image](../../pictures/frame/Mybatis配置文件中缺少mapper标签.png)
 
-### 3.6使用步骤总结
+## 3.6使用步骤总结
 
 1) 配置mybatis-config.xml 全局的配置文件 (1.数据源，2.外部的mapper) 及映射文件（配置statement）
 
@@ -211,20 +211,20 @@ public static void main(String[] args) throws IOException {
 
 6) 调用sqlSession.close()关闭会话
 
-## 4.动态代理Mapper实现类
+# 4.动态代理Mapper实现类
 
-### 4.1思考
+## 4.1思考
 
 因为在Mapper实现类中对SqlSession的使用方式非常相似，为了简化开发，mybatis提供了接口的动态代理
 
-### 4.2Mapper接口的动态代理实现，需要满足的条件
+## 4.2Mapper接口的动态代理实现，需要满足的条件
 
 1. **映射文件中的命名空间与Mapper接口的全路径一致**
 2. **映射文件中的statementId与Mapper接口的方法名保持一致**
 3. 映射文件中的statement的ResultType必须和mapper接口方法的返回类型一致（即使不采用动态代理，也要一致）
 4. 映射文件中的statement的parameterType必须和mapper接口方法的参数类型一致（不一定，该参数可省略）
 
-### 4.3修改后的UserMapper文件
+## 4.3修改后的UserMapper文件
 
 **名称空间必须改成UserMapper接口的全路径，StatementId必须和接口方法名一致，结果集的封装类型已经和方法的返回类型一致**
 
@@ -253,7 +253,7 @@ public static void main(String[] args) throws IOException {
 </mapper>
 ```
 
-### 4.4修改后的查询
+## 4.4修改后的查询
 
 ```java
 public class UserMapperTest {
@@ -281,9 +281,9 @@ public class UserMapperTest {
 }
 ```
 
-## 5.使用properties文件优化Mybatis配置
+# 5.使用properties文件优化Mybatis配置
 
-### 5.1jdbc.properties资源文件内容
+## 5.1jdbc.properties资源文件内容
 
 ```properties
 driver=com.mysql.jdbc.Driver
@@ -292,7 +292,7 @@ username=root
 password=root
 ```
 
-### 5.2在mybatis-config.xml中引入jdbc.properties资源文件
+## 5.2在mybatis-config.xml中引入jdbc.properties资源文件
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -324,13 +324,13 @@ password=root
 </configuration>
 ```
 
-## 6.settings设置
+# 6.settings设置
 
-### 6.1settings参数有很多，这里列举四种
+## 6.1settings参数有很多，这里列举四种
 
 ![Image](../../pictures/frame/Mybatis配置文件settings参数.png)
 
-### 6.2无法填充对应的字段信息
+## 6.2无法填充对应的字段信息
 
 1. 方法一：在sql语句中使用别名
 2. 方法二：使用resultMap
@@ -343,9 +343,9 @@ password=root
 	</settings>
 ```
 
-## 7.typeAliases用法
+# 7.typeAliases用法
 
-### 7.1方式一typeAlias
+## 7.1方式一typeAlias
 
 ```xml
 	<typeAliases>
@@ -354,7 +354,7 @@ password=root
 	</typeAliases>
 ```
 
-### 7.2方式二开启包扫描
+## 7.2方式二开启包扫描
 
 ```XML
 <typeAliases>
@@ -365,7 +365,7 @@ password=root
 	</typeAliases>
 ```
 
-## 8.Mappers引入mapper文件
+# 8.Mappers引入mapper文件
 
 ```xml
 	<!-- 映射文件 -->

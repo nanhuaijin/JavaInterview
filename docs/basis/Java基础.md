@@ -1,4 +1,4 @@
-## 1.如何理解Java面向对象
+# 1.如何理解Java面向对象
 
 面向对象是利于语音对现实事务进行抽象定义，主要有三大特征：
 
@@ -6,11 +6,11 @@
 2. 继承：继承是从已有类得到继承信息创建新类的过程
 3. 多态性：多态性是指允许不同子类型的对象对同一消息作出不同的响应。
 
-## 2.Java两大数据类型
+# 2.Java两大数据类型
 
 > 参考链接：https://blog.csdn.net/chenliguan/article/details/53888018
 
-### 2.1分类
+## 2.1分类
 
 1. 基本数据类型
 
@@ -27,7 +27,7 @@
 
 2. 引用数据类型：类、数组等。
 
-### 2.2封装类
+## 2.2封装类
 
 为了编程的方便还是引入了基本数据类型，但是为了能够将这些基本数据类型当成对象操作，Java为每 一个基本数据类型都引入了对应的包装类型（wrapper class），从Java 5开始引入了自动装箱/拆箱机制，使得二者可以自动相互转换。
 
@@ -36,14 +36,14 @@ eg：需求需要记录每个学生的成绩，如果使用基本数据类型，
 > 基本数据类型: boolean，char，byte，short，int，long，float，double 
 > 封装类类型：Boolean，Character，Byte，Short，Integer，Long，Float，Double
 
-### 2.3int和Integer的区别
+## 2.3int和Integer的区别
 
 - Integer是int的包装类；int是基本数据类型；
 - Integer变量必须实例化后才能使用；int变量不需要；
 - Integer实际是对象的引用，指向此new的Integer对象；int是直接存储数据值 ；
 - Integer的默认值是null；int的默认值是0。
 
-#### 2.3.1比较
+### 2.3.1比较
 
 - 在-128~127之内：静态常量池中cache数组是static final类型，cache数组对象会被存储于静态常量池中。cache数组里面的元素却不是static final类型，而是cache[k] = new Integer(j++)，那么这些元素是存储于堆中，只是cache数组对象存储的是指向了堆中的Integer对象（引用地址）
 - 在-128~127 之外：新建一个 Integer对象，并返回。
@@ -80,20 +80,20 @@ System.out.println(f == g); //true 常量池
 System.out.println(h == i); //false 
 ```
 
-### 2.4char型变量能不能存储一个汉字，为什么？
+## 2.4char型变量能不能存储一个汉字，为什么？
 
 char是按照字符存储的，不管英文还是中文，固定占用占用2个字节，用来储存Unicode字符，范围在0-65535。
 
 > unicode编码字符集中包含了汉字，所以，char型变量中当然可以存储汉字啦。不过，如果某个特殊的汉字没有被包含在unicode编码字符集中，那么，这个char型变量中就不能存储这个特殊汉字。
 
-## 3.String类
+# 3.String类
 
-### 3.1StringBuilder和StringBuffer区别
+## 3.1StringBuilder和StringBuffer区别
 
 - StringBuilder是线程不安全的，较StringBuffer有10-15%的性能提升。
 - StringBuffer底层都是采用的同步方法Synchronized修饰的。
 
-## 4.==和equals的区别
+# 4.==和equals的区别
 
 1. ==对于基本类型比较值是否相等，比较引用类型是判断内存地址是否相同
 2. equals是属于Object类的方法，如果没有被重写，默认也是==。如果重写了Object的hashCode方法和equals方法，则按照重写的规则判断。

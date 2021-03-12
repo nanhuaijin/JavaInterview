@@ -1,19 +1,19 @@
-## 1.Java集合类继承关系图
+# 1.Java集合类继承关系图
 
 ![Image](../../pictures/basis/集合类继承关系图.png)
 
-## 2.HashMap和HashTable
+# 2.HashMap和HashTable
 
 ![Image](../../pictures/basis/HashMap结构.png)
 
-### 2.1解决Hash冲突的三种方式
+## 2.1解决Hash冲突的三种方式
 
 - 开放寻址法：所有的元素都存放在哈希表中，如果存在冲突就通过再寻址的方法（探查序列），寻找下一处地址，直到找到空的地址为止。
   - 某大佬通俗点说：如果你想上厕所，但是拉开厕所门之后发现有位同学正在使劲，那怎么办？你会很自然的拉下一间门，直到找到空的位置为止。一般来说，你不会按照顺序一个一个地拉厕所门，而是会去拉你认为有可能没有被占用的单间的门，这可以通过闻味道，听声音来辨别，这就是寻址查找算法。如果找遍了厕所还是没有位置怎么办？这就需要扩容，至于什么时候扩容怎么扩容具体问题具体分析，还会涉及负载因子等术语。
 - 拉链法：相同Hash值的元素，存入相同位置的链表中。
 - 再哈希法：发生冲突之后，再次哈希。
 
-### 2.2HashMap
+## 2.2HashMap
 
 - HashMap在1.8的时候做了一个很大的改动，底层实现由数组中存放Entry<K, V>(实现了Map.Entry<K, V>)节点 + 链表变成了数组中存放**Node<K, V>(实现了Map.Entry<K, V>)节点 + 链表 + 红黑树**。
 
@@ -77,7 +77,7 @@
     }
 ```
 
-### 2.3HashTable
+## 2.3HashTable
 
 - 如果存储null值和null键，可以通过编译期，但是运行会报NPE异常。
 - 是线程安全的。
@@ -108,7 +108,7 @@ public synchronized V put(K key, V value) {
     }
 ```
 
-## 3.HashMap源码注释翻译
+# 3.HashMap源码注释翻译
 
 > Java的开发者对HashMap有详细的说明解释，而这段解释就在HashMap类的注释上，这里简单做一些翻译，希望可以帮到你。
 
@@ -140,9 +140,9 @@ HashMap实例有2个重要参数影响它的性能： 初始容量和负载因�
 
 如果不封装Hashmap， 可以使用Collections.synchronizedMap 方法调用HashMap实例。 在创建HashMap实例时避免其他线程操作该实例， 即保证了线程安全。
 
-## 4.ArrayList、LinkedList和Vector的区别
+# 4.ArrayList、LinkedList和Vector的区别
 
-### 4.1ArrayList和LinkedList区别
+## 4.1ArrayList和LinkedList区别
 
 - 是否保证线程安全：二者都是线程不安全的
 - 底层结构：
@@ -156,6 +156,6 @@ HashMap实例有2个重要参数影响它的性能： 初始容量和负载因�
   - ArrayList的空间浪费主要是由于扩容机制导致，末尾会存留一部分剩余空间。
   - LinkedList的空间浪费主要是需要保存前后指针。
 
-### 4.2ArrayList和Vector区别
+## 4.2ArrayList和Vector区别
 
 - Vector类的所有方法都是同步的，是线程安全的，但是如果只有一个线程，会耗费大量的时间。

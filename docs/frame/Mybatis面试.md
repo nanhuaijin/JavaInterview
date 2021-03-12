@@ -1,16 +1,16 @@
-## 1.Mapper.xml映射文件可选字段
+# 1.Mapper.xml映射文件可选字段
 
 ![Image](../../pictures/frame/Mybatis中Mapper文件可选字段.png)
 
-### 1.1select查询注意点
+## 1.1select查询注意点
 
 - id：在同一个命名空间下的唯一标识，使用动态代理之后，要求和mapper接口的方法名一致。
 - resultType：sql语句的结果集封装类型；使用动态代理之后，要求和mapper接口方法的返回类型一致。和resultMap二选一
 - parameterType：参数类型；使用动态代理之后，要求和mapper接口的方法参数类型一致。可省略，这里就省略了
 
-### 1.2主键回写
+## 1.2主键回写
 
-#### 1.2.1useGeneratedKeys
+### 1.2.1useGeneratedKeys
 
 ```XML
 	<!-- 
@@ -22,7 +22,7 @@
 	<insert id="insertUser" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="com.breeze.pojo.User">
 ```
 
-#### 1.2.2selectKey标签
+### 1.2.2selectKey标签
 
 ```xml
 <insert id="insertUser" parameterType="com.breeze.pojo.User">
@@ -41,7 +41,7 @@
 	</insert>
 ```
 
-### 1.3parameterType传入参数
+## 1.3parameterType传入参数
 
 1. 传入参数类型
    1. 基本数据类型
@@ -51,9 +51,9 @@
    1. #{}预编译
    2. ${}非预编译，**直接的sql拼接，不能防止sql注入**
 
-### 1.4#{}和${}区别
+## 1.4#{}和${}区别
 
-#### 1.4.1什么情况下会使用${}
+### 1.4.1什么情况下会使用${}
 
 情景：数据库存在两张一模一样的表，历史表和当前表。若是表名作为参数执行查询，使用#{}会报错，如下
 
@@ -71,21 +71,21 @@
 
 <img src="../../pictures/frame/param注解使用2.png" alt="Image" style="zoom:60%;" />
 
-#### 1.4.2重点：#{}和${}区别（重点）
+### 1.4.2重点：#{}和${}区别（重点）
 
 1. \#{}实现的是sql语句的预处理参数，之后执行的sql中用？代替，而${}实现的是sql语句的直接拼接
 2. \#{}使用时不需要关注数据类型，mybatis自动实现数据类型的转换，而不做数据类型的转换，需要自行判断数据类型
 3. \#{}可以防止sql注入问题，而${}不能
 
-## 2.缓存
+# 2.缓存
 
 缓存指的是把一些常用的数据，保存到一个可以高速读取的缓冲区中。方便程序在频繁读取的时候，可以快速的取出数据，这就叫做缓存。
 
 执行相同的sql语句和参数，mybatis不进行执行sql，而是从缓存中命中返回。
 
-### 2.1一级缓存
+## 2.1一级缓存
 
-#### 2.1.1在mybatis中，一级缓存默认是开启的，并且一直无法关闭，作用域：**在同一个sqlSession下**
+### 2.1.1在mybatis中，一级缓存默认是开启的，并且一直无法关闭，作用域：**在同一个sqlSession下**
 
 ```java
 	@Test
@@ -100,7 +100,7 @@
 
 ![Image](../../pictures/frame/Mybatis一级缓存.png)
 
-#### 2.1.2使用**sqlSession.clearCache()**可以强制清除缓存
+### 2.1.2使用**sqlSession.clearCache()**可以强制清除缓存
 
 ```java
 	@Test
@@ -116,7 +116,7 @@
 
 ![Image](../../pictures/frame/Mybatis清空一级缓存.png)
 
-#### 2.1.3执行update、insert、delete的时候，会清空缓存
+### 2.1.3执行update、insert、delete的时候，会清空缓存
 
 ```java
 	@Test
@@ -142,7 +142,7 @@
 
 ![Image](../../pictures/frame/Mybatsi更新等操作清空一级缓存.png)
 
-#### 2.1.4不同的sqlSession也不会从缓存中命中
+### 2.1.4不同的sqlSession也不会从缓存中命中
 
 ```java
     @Test
@@ -162,14 +162,14 @@
 
 ![Image](../../pictures/frame/Mybatis不同sqlSession一级缓存.png)
 
-### 2.2二级缓存
+## 2.2二级缓存
 
-#### 2.2.1mybatis 的二级缓存的作用域
+### 2.2.1mybatis 的二级缓存的作用域
 
 1. 同一个mapper的namespace，同一个namespace中查询sql可以从缓存中命中。
 2. 跨sqlSession，不同的SqlSession可以从二级缓存中命中
 
-#### 2.2.2如何开启二级缓存
+### 2.2.2如何开启二级缓存
 
 1. 在全局配置文件中，设置cacheEnabled参数，默认已开启
 2. 在Mapper映射文件中，添加cache标签
@@ -178,7 +178,7 @@
 >
 > ​			二级缓存的对象必须序列化，例如：User对象必须实现Serializable接口。
 
-#### 2.2.3实体类必须实现Serializable接口
+### 2.2.3实体类必须实现Serializable接口
 
 ```java
 	@Test
@@ -201,7 +201,7 @@
 
 ![Image](../../pictures/frame/Mybatis二级缓存命中.png)
 
-#### 2.2.4执行update、insert、delete的时候，会清空缓存
+### 2.2.4执行update、insert、delete的时候，会清空缓存
 
 ```java
 	@Test
@@ -232,7 +232,7 @@
 
 ![Image](../../pictures/frame/Mybatis二级缓存更新等操作清空.png)
 
-#### 2.2.5关闭二级缓存
+### 2.2.5关闭二级缓存
 
 不使用cache标签或者关闭全局开关
 
@@ -245,24 +245,24 @@
 	</settings>
 ```
 
-### 2.3缓存执行顺序
+## 2.3缓存执行顺序
 
 1. 当我们执行一个查询语句的时候，mybatis会先去二级缓存中查询数据。如果二级缓存中没有，就到一级缓存中查找。
 2. 如果二级缓存和一级缓存都没有，就发sql语句到数据库中去查询。
 3. 查询出来之后马上把数据保存到一级缓存中。
 4. 当SqlSession关闭的时候，会把一级缓存中的数据保存到二级缓存中。
 
-### 2.4思考：一级缓存和二级缓存会同时存在缓存数据吗？
+## 2.4思考：一级缓存和二级缓存会同时存在缓存数据吗？
 
-## 3.通常一个mapper.xml文件，都会对应一个Mapper接口，这个接口的工作原理是什么？接口里的方法，参数不同时，方法能重载吗？
+# 3.通常一个mapper.xml文件，都会对应一个Mapper接口，这个接口的工作原理是什么？接口里的方法，参数不同时，方法能重载吗？
 
 **Mapper 接口的工作原理是JDK动态代理，Mybatis运行时会使用JDK动态代理为Mapper接口生成代理对象proxy，代理对象会拦截接口方法，根据类的全限定名+方法名，唯一定位到一个MapperStatement并调用执行器执行所代表的sql，然后将sql执行结果返回。**
 
 > 详细的工作原理请参考这篇文章：https://blog.csdn.net/a745233700/article/details/89308762
 
-## 4.Mybatis是否支持延迟加载？如果支持，它的实现原理是什么？
+# 4.Mybatis是否支持延迟加载？如果支持，它的实现原理是什么？
 
-### 4.1如何开启延迟加载
+## 4.1如何开启延迟加载
 
 ![Image](../../pictures/frame/Mybatis配置文件settings参数.png)
 
@@ -275,7 +275,7 @@
 	</settings>
 ```
 
-### 4.2实现原理
+## 4.2实现原理
 
 ```java
     @Test
