@@ -19,16 +19,17 @@
 
 - 使用示例（注意：在实际开发中一般不允许直接创建线程，这里只作为eg）
 
-  - ```java
-    //只有一句代码语句
-    new Thread(() -> System.out.println("启动线程"), "线程名称").start();
-//多个代码语句
-    new Thread(() -> {
-      System.out.println("线程启动");
-      System.out.println("线程结束");
-    }, "线程名称").start();
-    ```
-    
+  ```java
+  //只有一句代码语句
+  new Thread(() -> System.out.println("启动线程"), "线程名称").start();
+  //多个代码语句
+  new Thread(() -> {
+    System.out.println("线程启动");
+    System.out.println("线程结束");
+  }, "线程名称").start();
+  ```
+
+  
 
 ### 1.2函数式编程
 
