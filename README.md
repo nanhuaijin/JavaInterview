@@ -14,7 +14,7 @@
   - [集合](https://github.com/nanhuaijin/JavaInterview/blob/master/docs/basis/Java集合.md)
   - [新特性](https://github.com/nanhuaijin/JavaInterview/blob/master/docs/basis/Java8新特性.md)
 - [JUC多线程及高并发](https://github.com/nanhuaijin/JavaInterview/blob/master/docs/juc/JUC高并发.md)
-- JVM虚拟机
+- [JVM虚拟机及垃圾回收](https://github.com/nanhuaijin/JavaInterview/blob/master/docs/jvm/JVM.md)
 - MySql数据库
 - NoSql数据库
   - [Redis相关知识点及面试题](https://github.com/nanhuaijin/JavaInterview/blob/master/docs/nosql/redis/Redis.md)
