@@ -21,7 +21,7 @@
 - MQ消息中间件
 - Web服务器
   - [Tomcat]()
-  - [Nginx]()
+  - [Nginx的简单应用](https://github.com/nanhuaijin/JavaInterview/blob/master/docs/web/Nginx.md)
 - Linux基本命令
 - Git前世今生
 - GitHub小拓展
