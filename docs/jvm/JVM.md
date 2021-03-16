@@ -229,4 +229,104 @@ Minor GC会把Eden中的所有活的对象都移到Survivor区域中，如果Sur
 
 基于上面的考虑，**老年代一般是由标记清除或者是标记清除与标记整理的混合实现**。以hotspot中的CMS回收器为例，CMS是基于Mark-Sweep实现的，对于对像的回收效率很高，而对于碎片问题，CMS采用基于Mark-Compact算法的Serial Old回收器做为补偿措施：当内存回收不佳（碎片导致的Concurrent Mode Failure时），将采用Serial Old执行Full GC以达到对老年代内存的整理。 
 
-# 2.
+# 2.JVM垃圾回收的时候如何确定垃圾？是否知道什么是GC Roots
+
+## 2.1什么是垃圾？
+
+内存中已经不再被使用的空间就是垃圾。
+
+## 2.2要进行垃圾回收，如何判断一个对象是否可以被回收？
+
+### 2.2.1引用计数法
+
+Java中，引用和对象是有关联的，如果要操作对象则必须用引用进行。 
+
+因此，简单的办法是通过引用计数来判断一个对象是否可以回收。简单的说，给对象中添加一个引用计数，每当有一个引用失效时，计数器值减1。
+
+任何时刻计数器值为0的对象就是不可能再被利用的，那么这个对象就是可回收对象。 
+
+那么为什么主流的Java虚拟机里面都没有选择这种算法呢？
+
+**主要的原因是它很难解决对象之间相互循环引用的问题。**
+
+![Image](../../pictures/jvm/引用计数.png)
+
+## 2.2.2枚举根节点做可达性分析（根搜索路径）
+
+为了解决引用计数法的循环引用问题，Java使用了可达性分析的方法。 
+
+所谓“GC roots”或者tracing GC的“根集合” **就是一组必须活跃的引用**。 
+
+**基本思路就是通过一系列名为“GC Roots”的对象作为起点** ，从这个被称为GC Roots的对象开始向下搜索，如果一个对象到GC Roots没有任何引用链相连时，则说明此对象不可用。即给定一个集合的引用作为根出发，通过引用关系遍历对象图，能被遍历到的（可达性的）对象就被判定为存活，没有被遍历到的就被判断为死亡。 
+
+### 2.2.3Java中可以作为GC Roots的对象
+
+![Image](../../pictures/jvm/GCRoots.png)
+
+1. **虚拟机栈（栈帧中的局部变量区，也叫做局部变量表）中引用的对象。**
+2. **方法区中的类静态属性引用的对象。**
+3. **方法区中常量引用的对象**
+4. **本地方法栈中JNI（Native方法）引用的对象。**
+
+# 3.你说你做过JVM调优和参数配置，请问如何查看JVM系统默认值
+
+## 3.1JVM的参数类型
+
+### 3.1.1 标配参数
+
+1. -version
+2. -help
+3. java -showversion
+
+### 3.1.2 x参数（了解）
+
+1. -Xint：解释执行
+2. -Xcomp：第一次使用就编译成本地代码
+3. -Xmixed：混合模式
+
+### 3.1.3 xx参数
+
+- Boolean类型
+  - 公式：-XX：+或者-某个属性值，+表示开启 -表示关闭
+  - Case
+    - 是否打印GC收集细节
+      - -XX：-PrintGCDetails
+      - -XX:+PrintGCDetails
+    - 是否使用串行垃圾回收器
+      - -XX:-UseSerialGC
+      - -XX:UseSerialGC
+- KV设值类型
+  - 公式：-XX:属性key=属性值value
+  - Case
+    - -XX:MetaspaceSize=128m
+    - -XX:MaxTenuringThreadhold=15
+- 题外话（坑题）两个经典参数：-Xms和-Xmx，这个你如何解释
+  - -Xms：等价于-XX:InitialHeapSize 初始大小内存，默认是物理内存1/64
+  - -Xmx：等价于-XX:MaxHeapSize 最大分配内存，默认是物理内存1/4
+
+## 3.2盘点家底查看JVM默认值
+
+- -XX：+PrintFlagsInitial
+  - 主要查看初始默认
+  - 公式
+    - java -XX：+PrintFlagsInitial -version
+    - java -XX:+PrintFlagsInitial
+- -XX:+PrintFlagsFinal
+  - 主要查看修改更新
+  - 公式
+    - java -XX:+PrintFlagsFinal -version
+    - java -XX:+PrintFlags -version
+- -XX:+PrintCommandLineFlags
+  - 主要查看内存分配大小、默认垃圾收集器等。
+
+## 3.3你平时工作用过的JVM常用基本配置参数有哪些？
+
+1. -Xms 等价于 -XX:InitialHeapSize 初始大小内存，默认是物理内存的1/64
+2. -Xmx 等价于 -XX:MaxHeapSize   最大分配内存，默认是物理内存的1/4
+3. -Xss 等价于 -XX:ThreadStackSize 设置单个线程的大小，一般默认为512k ~ 1024k，-XX:ThreadStackSize=0 如果是0表示的是默认值
+4. -Xmn 设置新生代的大小
+5. -XX:MetaspaceSize 设置元空间大小
+6. -XX:+PrintGCDetails 打印垃圾回收的一些信息
+7. -XX:SurvivorRatio 设置新生代中Eden和s0 s1空间的比例，-XX:SurvivorRatio=8 就是8:1:1
+8. -XX:NewRatio   配置年轻代与老年代在堆结构的占比，-XX:NewRatio=2 就是1:2 
+9. -XX:MaxTenuringThreshold=15 新生代晋升老年代需要的次数
