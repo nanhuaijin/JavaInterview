@@ -122,6 +122,31 @@ java.util.concurrent在并发编程中使用的工具类
 
 ![Image](../../pictures/juc/JUC.png)
 
+### 2.2AQS
+
+### 2.2.1什么是AQS？
+
+AQS：AbstractQueuesSynchronized，主要组成部分有一个volatile修饰的state变量和CLH队列（FIFO）双向队列
+
+```java
+    /**
+     * The synchronization state.
+     */
+    private volatile int state;
+```
+
+#### 2.2.2CLH队列（FIFO）双向队列
+
+这个队列主要是存储那些需要等待去获得锁的一些线程，并封装成一个一个node，从尾部添加进去，形成一个顺双向链表。里面用到了大量的CAS，原子操作和自旋。
+
+#### 2.2.3state变量
+
+state其实就是0和1的区别，获得锁之后便是1，在可重入锁中，再次获得锁便再次加1，当然需要区分当前线程是不是那个获得锁的线程，这个在Node中也有去定义。
+
+#### 2.2.4用到哪种设计模式
+
+主要用到模板模式，它是abstract修饰的，里面其实有很多方法没有实现，而是交由子类去实现的。
+
 ## 3.谈谈你对volatile的理解
 
 ### 3.1volatile是Java虚拟机提供的轻量级的同步机制
@@ -1069,6 +1094,14 @@ public class DeadLockMain {
 
 5. **锁绑定多个条件Condition**：synchronized没有ReentrantLock用来实现分组唤醒需要唤醒的线程，可以**精确唤醒**，而不是像synchronized要么随机唤醒一个要么唤醒全部线程。 
 
+### 6.10synchronized锁升级/锁优化问题
+
+JDK1.6之后引入了大量的优化，如自旋锁、适应性自旋锁、锁消除、锁粗化、偏向锁、轻量级锁。锁主要存在四种状态，依次是：无锁状态、偏向锁状态、轻量级锁状态、重量级锁状态，它们会随着竞争的激烈而逐渐升级。
+
+首先我们处于无锁状态来了一个线程，线程就持有锁了，而对象的对象头有一个偏向锁的标记，其实就是0和1，将它设置为1，这个时候synchronized就升级为偏向锁了。
+
+如果再有线程过来竞争，如果我自旋几次就可以获得锁（自旋的目的就是降低线程切换的成本），其实是不会升级的，只有当自旋之后拿不到锁才会升级成为轻量级锁。如果还有其他线程再次来竞争，它就会认为这个竞争非常激烈，那么就不需要自旋带来CPU消耗，就会继续膨胀为重量级锁，使用操作系统互斥锁。但是之后是不会再降级的，所以synchronized慎用。
+
 ## 7.并发容器（CountDownLatch/CyclicBarrier/Semaphore）
 
 ### 7.1CountDownLatch减少计数
@@ -1506,9 +1539,9 @@ public class MyThreadPoolExecutor {
                 TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(3),
                 Executors.defaultThreadFactory(),
-          			//new ThreadPoolExecutor.AbortPolicy()
-          			//new ThreadPoolExecutor.CallerRunsPolicy()
-          			//new ThreadPoolExecutor.DiscardOldestPolicy()
+                //new ThreadPoolExecutor.AbortPolicy()
+                //new ThreadPoolExecutor.DiscardPolicy()
+                //new ThreadPoolExecutor.DiscardOldestPolicy()
                 new ThreadPoolExecutor.CallerRunsPolicy());
 
         //开发中不使用jdk自带的，需要自己手动写线程池

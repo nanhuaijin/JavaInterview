@@ -20,6 +20,7 @@
 - NoSql数据库
   - [Redis相关知识点及面试题](https://github.com/nanhuaijin/JavaInterview/blob/master/docs/nosql/redis/Redis.md)
 - MQ消息中间件
+  - [带你初步了解RabbitMQ]()
 - Web服务器
   - [Tomcat]()
   - [Nginx的简单应用](https://github.com/nanhuaijin/JavaInterview/blob/master/docs/web/Nginx.md)

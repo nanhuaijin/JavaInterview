@@ -122,3 +122,29 @@ char是按照字符存储的，不管英文还是中文，固定占用占用2个
 - StringBuilder是线程不安全的，较StringBuffer有10-15%的性能提升。
 - StringBuffer底层都是采用的同步方法Synchronized修饰的。
 
+# 3.说说反射的用途及实现
+
+## 3.1什么是反射？
+
+类加载器将.class文件加载进运行时数据区，其实也就是方法区中，并且生成对应的Class对象。在这步操作中，我们可以通过反射的方式去获取类的所有属性和方法（而不是通过new的方式去获取），这种动态获取对象信息及方法的方式就叫做反射。
+
+## 3.2为什么要使用反射？
+
+我觉得其中之一就是解耦。
+
+## 3.3反射获取class的方式
+
+1. 类名.class
+2. 对象.getClass()
+3. class.forname(包名+类名)
+4. NewInstance()
+
+## 3.4反射的用途/应用场景
+
+1. 在加载JDBC驱动的时候用到反射
+
+   ```java
+   Class.forName("com.mysql.jdbc.Driver");
+   ```
+
+2. 像我们常使用的框架Spring/Mybatis等都大量使用了反射，Mybatis中的接口和mapper文件namespace映射关系用到的是JDK动态代理，而动态代理也是依赖于反射的。还有我们常说的Spring IOC控制反转，AOP面向切面编程，也涉及反射。
