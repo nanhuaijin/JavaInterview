@@ -24,6 +24,17 @@
 - Web服务器
   - [Tomcat]()
   - [Nginx的简单应用](https://github.com/nanhuaijin/JavaInterview/blob/master/docs/web/Nginx.md)
+- 23种设计模式
+  - [单例模式]()
+  - [原型模式]()
+  - [简单工厂模式]()
+  - [工厂方法模式]()
+  - [抽象工厂模式]()
+  - [建造者模式]()
+  - [代理模式]()
+  - [适配器模式]()
+  - [桥接模式]()
+  - [装饰器模式]()
 - Linux基本命令
 - Git前世今生
 - GitHub小拓展
@@ -33,4 +44,6 @@
   - [Spring入门使用](https://github.com/nanhuaijin/JavaInterview/blob/master/docs/frame/Spring基础.md)
   - [Spring相关面试题及难点](https://github.com/nanhuaijin/JavaInterview/blob/master/docs/frame/Spring面试.md)
 - 第三方API使用
+- 大厂劝退攻略
+  - [菜鸟网络之申通快递](https://github.com/nanhuaijin/JavaInterview/blob/master/docs/interview/菜鸟申通.md)
 
