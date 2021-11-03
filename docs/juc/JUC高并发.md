@@ -94,18 +94,61 @@
 
 ![Image](../../pictures/juc/线程生命周期.png)
 
-### 1.5创建线程的四种方式
+### 1.5创建线程的两种方式
 
-1. 继承Thread类，重写run方法，调用start方法启动线程。
+```java
+/* 
+ * 大家可以看下Thread类，注释上标明有两种创建新线程的方式 一种继承一种实现
+ * There are two ways to create a new thread of execution. One is to
+ * declare a class to be a subclass of <code>Thread</code>. This
+ * subclass should override the <code>run</code> method of class
+ * <code>Thread</code>. 
+ * The other way to create a thread is to declare a class that
+ * implements the <code>Runnable</code> interface. That class then
+ * implements the <code>run</code> method.
+ */
+```
 
-2. 实现Runnable接口，重写run方法，放入Thread构造器中，通过thread的start方法调用。
+- 继承Thread类，重写run方法，调用start方法启动线程。
+- 实现Runnable接口，重写run方法，放入Thread构造器中，通过thread的start方法调用。
+- 实现Callable接口，重写call方法，有返回值可以抛出异常。
+  - 创建FutureTask对象，传入Thread构造器中，通过start方法调用。
+  - FutureTask对象.get() 获取返回值。
+- **线程池**
 
-3. 实现Callable接口，重写call方法，有返回值可以抛出异常。
+> Callable接口本质上和Runnable类似，所以归为一类，至于线程池底层也是通过Thread和Runnable实现的。
 
-4. - 创建FutureTask对象，传入Thread构造器中，通过start方法调用。
-   - FutureTask对象.get() 获取返回值。
-
-5. **线程池**
+```java
+/**
+ * A task that returns a result and may throw an exception.
+ * Implementors define a single method with no arguments called
+ * {@code call}.
+ *
+ * <p>The {@code Callable} interface is similar to {@link             ---》 和Runnable相似的
+ * java.lang.Runnable}, in that both are designed for classes whose
+ * instances are potentially executed by another thread.  A
+ * {@code Runnable}, however, does not return a result and cannot
+ * throw a checked exception.
+ *
+ * <p>The {@link Executors} class contains utility methods to
+ * convert from other common forms to {@code Callable} classes.
+ *
+ * @see Executor
+ * @since 1.5
+ * @author Doug Lea
+ * @param <V> the result type of method {@code call}
+ */
+@FunctionalInterface
+public interface Callable<V> {
+    /**
+     * Computes a result, or throws an exception if unable to do so.
+     *
+     * @return computed result
+     * @throws Exception if unable to compute a result
+     */
+    V call() throws Exception;
+}
+```
 
 ### 1.6wait和sleep区别
 
@@ -1522,6 +1565,25 @@ public class BlockingQueueMain {
 ```
 
 ## 9.ThreadPool线程池
+
+## 9.0源码解析
+
+线程池主要解决两个问题：当我们需要处理大量的异步任务的时候，它们通常可以提供比较好的性能。另外提供了限制和管理资源的方法（也就是线程池的复用性和限制创建线程数量）。
+
+```java
+/**
+ * <p>Thread pools address two different problems: they usually
+ * provide improved performance when executing large numbers of
+ * asynchronous tasks, due to reduced per-task invocation overhead,
+ * and they provide a means of bounding and managing the resources,
+ * including threads, consumed when executing a collection of tasks.
+ * Each {@code ThreadPoolExecutor} also maintains some basic
+ * statistics, such as the number of completed tasks.
+ *
+ */
+```
+
+
 
 ### 9.1自定义线程池
 
