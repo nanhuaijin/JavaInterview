@@ -112,11 +112,23 @@
 - 继承Thread类，重写run方法，调用start方法启动线程。
 - 实现Runnable接口，重写run方法，放入Thread构造器中，通过thread的start方法调用。
 - 实现Callable接口，重写call方法，有返回值可以抛出异常。
-  - 创建FutureTask对象，传入Thread构造器中，通过start方法调用。
-  - FutureTask对象.get() 获取返回值。
+
+```java
+				Callable<Integer> callable = () -> {
+            System.out.println("1");
+            return 1;
+        };
+        FutureTask<Integer> task = new FutureTask<>(callable);
+        Thread thread = new Thread(task);
+        thread.start();
+				Integer integer = task.get();
+```
+
+![image](../../pictures/juc/FutureTask实现关系图.png)
+
 - **线程池**
 
-> Callable接口本质上和Runnable类似，所以归为一类，至于线程池底层也是通过Thread和Runnable实现的。
+> Callable接口本质上和Runnable类似，所以归为一类，至于线程池也是通过Thread和Runnable实现的，它的执行方法execute(Runable a)，启动线程调用Thread.start()方法
 
 ```java
 /**
@@ -169,7 +181,7 @@ java.util.concurrent在并发编程中使用的工具类
 
 ### 2.2.1什么是AQS？
 
-AQS：AbstractQueuesSynchronized，主要组成部分有一个volatile修饰的state变量和CLH队列（FIFO）双向队列
+AQS：AbstractQueuedSynchronizer，主要组成部分有一个volatile修饰的state变量和CLH队列（first-in-first-out FIFO）双向队列
 
 ```java
     /**
@@ -210,7 +222,7 @@ state其实就是0和1的区别，获得锁之后便是1，在可重入锁中，
    2. 线程加锁前，必须读取主内存的最新值到自己的工作内存。 
    3. 加锁解锁是同一把锁。 
 
-3. 由于JVM运行程序的实体是线程，而每个线程创建时JVM都会为其创建一个 **工作内存** （有些地方称为栈空间），工作内存是每个线程的私有数据区域，而Java内存模型中规定所有变量都存储到 **主内存** **，** 主内存是共享内存区域，所有线程都可以访问， **但线程对变量的操作（读取、复制等）必须在工作内存中进行，首先要将变量从主内存拷贝到自己的工作内存空间，然后对变量进行操作，操作完成后再将变量写回主内存** ，不能直接操作主内存中的变量，各个线程中的工作内存中存储着主内存中的 **变量副本拷贝** ，因此不同的线程间无法访问对方的工作内存，线程间的通信（传值）必须通过主内存来完成，其简要访问过程如下图： 
+3. 由于JVM运行程序的实体是线程，而每个线程创建时JVM都会为其创建一个 **工作内存** （有些地方称为栈空间），工作内存是每个线程的私有数据区域，而Java内存模型中规定所有变量都存储到 **主内存（即本地方法区和堆）**，主内存是共享内存区域，所有线程都可以访问， **但线程对变量的操作（读取、复制等）必须在工作内存中进行，首先要将变量从主内存拷贝到自己的工作内存空间，然后对变量进行操作，操作完成后再将变量写回主内存** ，不能直接操作主内存中的变量，各个线程中的工作内存中存储着主内存中的 **变量副本拷贝** ，因此不同的线程间无法访问对方的工作内存，线程间的通信（传值）必须通过主内存来完成，其简要访问过程如下图： 
 
 <img src="../../pictures/juc/内存模型.png" alt="Image" style="zoom:67%;" />
 
@@ -376,7 +388,8 @@ public static void visibility() {
 
    1. **DCL（双端检锁 Double Check Lock）** 机制不一定线程安全，原因是有指令重排序的存在，加入volatile可以禁止指令重排。原因在于某一个线程执行到第一个检测，读取到的instance 不为null时，instance的引用对象**可能没有完成初始化**。
    2. 指令重排只会保证串行语义的执行一致性（单线程），但并不会关心多线程间的语义一致性。 
-   3. **所以当一条线程访问instance不为null时，由于instance实例未必已初始化完成，也就造成了线程安全问题 。**
+
+> 对象创建需要  1.分配对象内存空间 2.初始化对象 3.设置变量指向内存地址，但是由于指令重排序的原因，1，3可能先执行，这时其他线程拿到的instance对象已经不是null，但是对象没有初始化，使用时候就会报错
 
 ### 2.2.7synchronized和volatile区别
 
@@ -384,7 +397,7 @@ public static void visibility() {
 2. volatile仅能使用在变量级别；synchronized则可以使用在静态方法、方法、和类级别的 
 3. volatile仅能实现变量的修改可见性，不能保证原子性；而synchronized则可以保证变量的修改可见性和原子性 
 4. volatile不会造成线程的阻塞；synchronized可能会造成线程的阻塞。 
-5. volatile标记的变量不会被编译器优化；synchronized标记的变量可以被编译器优化 
+5. volatile标记的变量不会被编译器优化；被synchronized修饰的代码可以被编译器优化，但是不能说synchronized就是不安全的，这让看具体的代码实现，比如单例模式，DCL就会存在安全问题，但是如果synchronized直接修饰在方法上、类上，由于排它锁的性质，本质上已经是单线程执行了，无需关心指令重排
 
 ## 4.CAS你了解不？
 
@@ -406,7 +419,7 @@ public static void visibility() {
 
 2. 变量valueOffset，表示该变量在**内存中的偏移地址**，因为Unsafe就是根据内存偏移地址获取数据的。 
 
-3. 变量value用volatile修饰，保证了多线程之间的内存可见性。 
+3. 变量atomicInteger类中value用volatile修饰，保证了多线程之间的内存可见性。 
 
 ### 4.3CAS缺点
 
@@ -606,7 +619,7 @@ public boolean add(E e) {
 ### 5.3HashMap
 
 1. 使用 Collections.synchronizedMap() 解决线程安全问题
-2. 使用 **ConcurrentHashMap** 解决线程安全问题【**重点**】
+2. 使用 **ConcurrentHashMap** 解决线程安全问题【**重点**】它采用的分段式锁Segment extends ReentrantLock 
 
 ## 6.锁机制
 
@@ -803,7 +816,7 @@ class Phone implements Runnable{
 }
 ```
 
-### 6.4独占锁/共享锁
+### 6.4独占锁（排它锁）/共享锁
 
 1. 独占锁：指该锁一次只能被一个线程所持有。对 ReentrantLock 和 Synchronized 而言都是独占锁。
 
