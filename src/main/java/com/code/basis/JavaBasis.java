@@ -1,5 +1,9 @@
 package com.code.basis;
 
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+
 /**
  * @author : breeze
  * @date : 2021/3/9
@@ -7,9 +11,11 @@ package com.code.basis;
  */
 public class JavaBasis {
     public static void main(String[] args) {
+        //int和Integer区别
+        // compareIntAndInteger();
 
-        compareIntAndInteger();
-
+        //测试HashTable存储null键null值 编译可以，执行报错
+        checkHashTable();
     }
 
     /**
@@ -32,5 +38,18 @@ public class JavaBasis {
         System.out.println(d == e); //自动拆箱为int进行比较  true
         System.out.println(f == g); //true 常量池
         System.out.println(h == i); //false
+    }
+
+    /**
+     * 测试HashTable存储null键null值
+     */
+    public static void checkHashTable() {
+        Map<Object, Object> map = new Hashtable<>();
+        map.put(null, 1);
+        System.out.println(map);
+
+        Map<Object, Object> map1= new HashMap<>();
+        map1.put(null, null);
+        System.out.println(map1);
     }
 }

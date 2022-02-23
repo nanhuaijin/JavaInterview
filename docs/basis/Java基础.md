@@ -137,7 +137,6 @@ char是按照字符存储的，不管英文还是中文，固定占用占用2个
 1. 类名.class
 2. 对象.getClass()
 3. class.forname(包名+类名)
-4. NewInstance()
 
 ## 3.4反射的用途/应用场景
 

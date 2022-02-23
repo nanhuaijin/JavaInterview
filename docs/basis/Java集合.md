@@ -75,6 +75,50 @@
             }
         }
     }
+
+	//jdk1.8 HashMap
+final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
+                   boolean evict) {
+        Node<K,V>[] tab; Node<K,V> p; int n, i;
+        if ((tab = table) == null || (n = tab.length) == 0)
+            n = (tab = resize()).length;
+        if ((p = tab[i = (n - 1) & hash]) == null) //如果多线程a，b在这里执行后切换，就会导致数据覆盖
+            tab[i] = newNode(hash, key, value, null);
+        else {
+            Node<K,V> e; K k;
+            if (p.hash == hash &&
+                ((k = p.key) == key || (key != null && key.equals(k))))
+                e = p;
+            else if (p instanceof TreeNode)
+                e = ((TreeNode<K,V>)p).putTreeVal(this, tab, hash, key, value);
+            else {
+                for (int binCount = 0; ; ++binCount) {
+                    if ((e = p.next) == null) {
+                        p.next = newNode(hash, key, value, null);
+                        if (binCount >= TREEIFY_THRESHOLD - 1) // -1 for 1st
+                            treeifyBin(tab, hash);
+                        break;
+                    }
+                    if (e.hash == hash &&
+                        ((k = e.key) == key || (key != null && key.equals(k))))
+                        break;
+                    p = e;
+                }
+            }
+            if (e != null) { // existing mapping for key
+                V oldValue = e.value;
+                if (!onlyIfAbsent || oldValue == null)
+                    e.value = value;
+                afterNodeAccess(e);
+                return oldValue;
+            }
+        }
+        ++modCount;
+        if (++size > threshold)
+            resize();
+        afterNodeInsertion(evict);
+        return null;
+    }
 ```
 
 ## 2.3HashTable
@@ -91,7 +135,7 @@ public synchronized V put(K key, V value) {
 
         // Makes sure the key is not already in the hashtable.
         Entry<?,?> tab[] = table;
-        int hash = key.hashCode();
+        int hash = key.hashCode(); //这里如果key是null，报错NPE
         int index = (hash & 0x7FFFFFFF) % tab.length;
         @SuppressWarnings("unchecked")
         Entry<K,V> entry = (Entry<K,V>)tab[index];
@@ -114,7 +158,7 @@ public synchronized V put(K key, V value) {
 
 ![Image](../../pictures/basis/HashMap注释1.png)
 
-HashTable实现了Map接口类， HashMap这些接口实现了所有可选的map功能， 包括允许空值和空key。(HashMap和HashTable基本一致， 区别是HashMap是线程不同步的且允许空key。 HashMap不保证map的顺序， 而且顺序是可变的。)
+HashTable实现了Map接口类， HashMap这些接口实现了所有可选的map功能， 包括允许空值和空key。(HashMap和HashTable基本一致， 区别是HashMap是线程不安全（不同步）的且允许空key。 HashMap不保证map的顺序， 而且顺序是可变的。)
 
 ![Image](../../pictures/basis/HashMap注释2.png)
 
@@ -139,6 +183,18 @@ HashMap实例有2个重要参数影响它的性能： 初始容量和负载因�
 <img src="../../pictures/basis/HashMap注释7.png" alt="Image" style="zoom:150%;" />
 
 如果不封装Hashmap， 可以使用Collections.synchronizedMap 方法调用HashMap实例。 在创建HashMap实例时避免其他线程操作该实例， 即保证了线程安全。
+
+```java
+    /**
+     * The smallest table capacity for which bins may be treeified.
+     * (Otherwise the table is resized if too many nodes in a bin.)
+     * Should be at least 4 * TREEIFY_THRESHOLD to avoid conflicts
+     * between resizing and treeification thresholds.
+     */
+    static final int MIN_TREEIFY_CAPACITY = 64;
+```
+
+最小树形化容量阈值，即哈希表容量 > 64 才允许链表转换为红黑树，否则，若桶内的元素太多，则直接扩容，而不进行树形化。为了避免进行扩容和树形化冲突，这个值不能小于4 * 8
 
 # 4.ArrayList、LinkedList和Vector的区别
 
