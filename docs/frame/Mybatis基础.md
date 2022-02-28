@@ -86,8 +86,8 @@ public class JdbcTest {
 ![Image](../../pictures/frame/Mybatis整体架构.png)
 
 -  配置文件
-  - 全局配置文件：mybatis-config.xmlàhibernate.cfg.xml，作用：配置数据源，引入映射文件
-  - 映射文件：XxMapper.xmlàxx.hbm.xml，作用：配置sql语句、参数、结果集封装类型等
+  - 全局配置文件：mybatis-config.xml  ---》 hibernate.cfg.xml，作用：配置数据源，引入映射文件
+  - 映射文件：XxMapper.xml ----》 xx.hbm.xml，作用：配置sql语句、参数、结果集封装类型等
 - SqlSessionFactory
   - 相当于Hibernate的SessionFactory，作用：获取SqlSession
   - 通过newSqlSessionFactoryBuilder().build(inputStream)来构建，inputStream：读取配置文件的IO流
